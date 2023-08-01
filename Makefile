@@ -10,14 +10,14 @@ F64 =-m64
 
 
 .c.s:
-	$(CC) $(OFLAGS) $(CINC) -S $(F64) $*.c -o $*.s
+	$(CC) $(OFLAGS) $(CINC) -S $(F64) $*.c
 
 .c.d:
 	$(CC) $(CFLAGS) $(CINC) $(F64) $*.c -o $*
 	objdump -d $* > $*.d
 	rm -f $*
 
-files:	swap.s 
+files:	swap.s
 
 clean:
 	rm -f *~ *.s *.d *.s *.64d
