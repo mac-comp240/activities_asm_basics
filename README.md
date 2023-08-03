@@ -85,8 +85,13 @@ messages are generated at compile-time
 - The `-m64` option ensures that the compiler targets a 64-bit machine (leaving this out may work just fine)
 
 **Suffixes:** The line containing `.SUFFIXES:` sets up a list of filename suffixes that will be treated specially 
-by later targets. These "suffix targets" are of the form `.a.b` where `a` and `b` are declared in the `.SUFFIXES` 
-line. This target says that any file ending in `.a` can be converted to a file ending in `.b` by this rule. 
+by later targets, called "implicit suffix replacement rules."
+
+There are two implicit suffix replacement rules in the Makefile. They are of the form `.a.b` where `a` and `b` are declared in the `.SUFFIXES` line. This is equivalent to writing:
+
+	%.a : %.b
+
+This means that if any file ending in .a has changed, use the next indented lines to create a file ending in .b.The % sign is a wildcard for any file name prefix.
 
 In our Makefile, we have two suffix rules:
     .c.s:
@@ -154,7 +159,7 @@ Now we will look at how the assembly differs when the type of data is a differen
 - Discuss with your teammates/neighbors what is different, and why
 - If you have time, experiment with other data sizes
 
-### Optional Task 5: Makefile generating .d files
+### Task 5: Makefile generating .d files
 
 As it is, the Makefile can generate a .d file, but only when (1) it is given a complete program including a `main` function,
 and (2) when all the code for that program is contained in a single .c file. We had not set up our code
