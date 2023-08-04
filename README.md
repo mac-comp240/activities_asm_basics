@@ -84,30 +84,40 @@ New compiler options:
 messages are generated at compile-time
 - The `-m64` option ensures that the compiler targets a 64-bit machine (leaving this out may work just fine)
 
-**Suffixes:** The line containing `.SUFFIXES:` sets up a list of filename suffixes that will be treated specially 
-by later targets, called "implicit suffix replacement rules."
-
-There are two implicit suffix replacement rules in the Makefile. They are of the form `.a.b` where `a` and `b` are declared in the `.SUFFIXES` line. This is equivalent to writing:
-
+**Pattern-matching rules:** Makefiles allow us to specify pattern-matching rules, that apply to any files that
+match the given pattern. Pattern rules look just like regular rules, except they contain the special symbol %
+that is a placeholder for any string. A typical pattern might look like this:
 	%.a : %.b
 
-This means that if any file ending in .a has changed, use the next indented lines to create a file ending in .b.The % sign is a wildcard for any file name prefix.
+This means that if any file ending in `.b` has changed, use this rule to generate a target file with the same base name,
+but ending in  `.a`.
 
-In our Makefile, we have two suffix rules:
-    .c.s:
-	
-This indicates a rule to generate a .s file from a .c file. Any .c files serves as a prerequisite for the 
-corresponding file ending in .s, so changes to any .c file may trigger this rule.
+In the body of the rule, we use a set of special codes to refer to the target filename, the prerequisite files, and the 
+root name:
+- `$@` refers to the target name, `%.a` (with % replaced by the actual root name)
+- `$<` refers to the first prerequisite name `%.b` (with % replaced by the actual root name)
+- `$*` refers to the root name
 
-    .c.d:
+In our Makefile, we have two pattern rules: one for generating assembly code with the compiler from a C code file:
 
-This indicates a rule to generate a .d file from a .c file. Notice that this rule 
-does three things: it compiles the program, it runs `objdump` to generate the
+    %.s: %.c
+
+and one that generates assembly code by first creating an executable, and then disassembling it to build a full
+assembly program:
+
+    %.d: %.c
+
+
+The first rule will trigger any time a `.c` file is modified, **if** the `.s` file is a prerequisite somewhere. The
+rule uses the -S compiler option to force the generation of a `.s` file, using the `.c` fileas the source
+
+The second rule will trigger any time a `.c` file is modified, **if** the `.d` file is listed as a prerequisite somewhere.
+The rule  does three things: it compiles the program, it runs `objdump` to generate the
 disassembled assembly file, and it removes the executable (you could remove that line if you want to be able 
 to run the executable).
 
-**Limitations:** As it is, this won't work for our code example, because we need to give two .c files to the 
-compiler command. But we'll fix that later.
+**Limitations:** As it is, this won't work for our code example, because we need to give two `.c` files to the 
+compiler. But we'll fix that later.
 
 **The `files` target:** This target makes the specified assembly code files by triggering
 other targets above it. Use this as your main `make` target. Right now, it only seeks to make `swap.s`, but we'll 
@@ -169,8 +179,10 @@ that way, because we wanted the **Method one** assembly to be as simple as possi
     - Option 1: Copy the definition of `swap` into the `main.c` code file
     - Option 2: Copy the main function into the `swap.c` code file
 - Add `swap.d` or `main.d` to the `files` target (depending on which option you chose)
-- Call `make files` and look at the .d file that is generated as a result: just look at the parts labeled 
-`<swap>` and `<main>`. Compare them to the .s files from earlier sections
+- Call `make files` and look at the .d file that is generated as a result: just look at the parts labeled `<swap>` and `<main>`. Compare them to the .s files from earlier sections:
+    - How do the instructions in the `swap` function differ between the two methods we've used to generate them?
+    - Why might they differ?
+
 - Modify the `main` function to call the function from `swap_int.c` instead; make sure it works
 
 
@@ -191,6 +203,7 @@ that way, because we wanted the **Method one** assembly to be as simple as possi
   - [An Introduction to Makefiles](https://www.gnu.org/software/make/manual/html_node/Introduction.html), by GNU
   - [Makefile Tutorials and Examples to Build From](https://earthly.dev/blog/make-tutorial/), by Aniket Bhattacharyea
   - [makefile basics - anthony explains](https://www.youtube.com/watch?v=20GC9mYoFGs)
+  - [Defining and Redefining Pattern Rules](https://www.gnu.org/software/make/manual/html_node/Pattern-Rules.html)
 - Printf formatting codes
   - [printf format specifier reference from cplusplus.com](http://www.cplusplus.com/reference/cstdio/printf/).
   [_Format Specifiers in C_](https://www.thecrazyprogrammer.com/2016/10/format-specifiers-c.html) by The Crazy Programmer
