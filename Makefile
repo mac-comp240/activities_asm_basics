@@ -11,7 +11,7 @@ F64 =-m64
 %.d: %.c
 	$(CC) $(CFLAGS) $(CINC) $(F64) $< -o $*
 	objdump -d $* > $@
-	rm -f $*
+	# rm -f $*
 
 files:	swap.s
 
