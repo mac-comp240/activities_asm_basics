@@ -18,10 +18,3 @@ int main() {
 
 // TODO: for the last part of the activity, you might copy the definition of
 // swap here
-void swap(long *xp, long *yp)
-{
-  long t0 = *xp;
-  long t1 = *yp;
-  *xp = t1;
-  *yp = t0;
-}
