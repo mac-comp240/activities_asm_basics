@@ -14,9 +14,9 @@ a more complex Makefile used to generate assembly code automatically:
 - `Makefile`
     - a makefile to automate the compilation process
 - `swap.c`
-    - a "library" file (because it has no `main`) that defines a swap function
-- `main.c`
-    - a simple main program that tests the `swap` function (didn't bother with a .h file here)
+    - a library file that only contains a `swap` function
+- `swap_main.c`
+    - a simple program that tests the `swap` function
  
 ## VS Code Users
 
@@ -25,8 +25,9 @@ left side (below the bug icon), and search for **assembly**. Then pick the popul
 
 ## Your Tasks
 
-Before starting the tasks, examine the contents of `swap.c` and `main.c`. Make sure that the C code
-makes sense to you, and everything happening is familiar. If necessary, review how pointers work!
+Before starting the tasks, examine the contents of `swap.c` and `swap_main.c`. 
+Make sure that the C code makes sense to you, and everything happening is 
+familiar. If necessary, review how pointers work!
 
 
 ### Task 1: Compiling and Generating Assembly in the Terminal
@@ -53,11 +54,11 @@ _The Makefile for this repository can generate assembly in this way for any code
 **Method two:** The second approach, described in your textbook, is to generate an executable and then use the
 `objdump` utility to _disassemble_ the executable and reproduce the assembly code that would have created the
 executable. This gives us more information, including mapping assembly to the actual machine code. But we must have
-a complete program that can generate a functional executable in order to use this method. That is what `main.c` is for.
+a complete program that can generate a functional executable in order to use this method. That is what `swap_main.c` is for.
 
 Try the following two commands in the terminal:
 
-    gcc -Ob -g swap.c main.c -o swap
+    gcc -Og -g swap.c swap_main.c -o swap
     objdump -d swap > swap.d
 
 New compiler options:
@@ -112,19 +113,21 @@ The first rule will trigger any time a `.c` file is modified, **if** the `.s` fi
 rule uses the -S compiler option to force the generation of a `.s` file, using the `.c` fileas the source
 
 The second rule will trigger any time a `.c` file is modified, **if** the `.d` file is listed as a prerequisite somewhere.
-The rule  does three things: it compiles the program, it runs `objdump` to generate the
-disassembled assembly file, and it removes the executable (you could remove that line if you want to be able 
-to run the executable).
+The rule  does three things: it compiles the program, it runs `objdump` to 
+generate the disassembled assembly file, and it removes the executable 
+(you could remove that line if you want to be able to run the executable).
 
-**Limitations:** As it is, this won't work for our code example, because we need to give two `.c` files to the 
-compiler. But we'll fix that later.
+**Limitations:** As it is, this won't work for our code example, because we need 
+to give two `.c` files to the compiler. But we'll fix that later.
 
-**The `files` target:** This target makes the specified assembly code files by triggering
-other targets above it. Use this as your main `make` target. Right now, it only seeks to make `swap.s`, but we'll 
+**The `files` target:** This target makes the specified assembly code files by 
+triggering other targets above it. Use this as your main `make` target. Right 
+now, it only seeks to make `swap.s`, but we'll 
 modify it later to make other files.
 
-**The `clean` target:** We've seen the `clean` target before; in this case it removes all backup files, all .s 
-files, all .d files, and any .64d files that might be created along the way
+**The `clean` target:** We've seen the `clean` target before; in this case it 
+removes all backup files, all .s files, all .d files, and any .64d files that 
+might be created along the way.
 
 
 ### Task 3: Reading Assembly
@@ -175,10 +178,9 @@ As it is, the Makefile can generate a .d file, but only when (1) it is given a c
 and (2) when all the code for that program is contained in a single .c file. We had not set up our code
 that way, because we wanted the **Method one** assembly to be as simple as possible.
 
-- Modify the existing code files in one of two ways to make the Makefile work
-    - Option 1: Copy the definition of `swap` into the `main.c` code file
-    - Option 2: Copy the main function into the `swap.c` code file
-- Add `swap.d` or `main.d` to the `files` target (depending on which option you chose)
+- Modify the existing code files to make the Makefile work
+    - Copy the definition of `swap` into the `swap_main.c` code file
+- Add `swap_main.d` to the `files` target
 - Call `make files` and look at the .d file that is generated as a result: just look at the parts labeled `<swap>` and `<main>`. Compare them to the .s files from earlier sections:
     - How do the instructions in the `swap` function differ between the two methods we've used to generate them?
     - Why might they differ?
