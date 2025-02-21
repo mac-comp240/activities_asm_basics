@@ -54,11 +54,11 @@ _The Makefile for this repository can generate assembly in this way for any code
 **Method two:** The second approach, described in your textbook, is to generate an executable and then use the
 `objdump` utility to _disassemble_ the executable and reproduce the assembly code that would have created the
 executable. This gives us more information, including mapping assembly to the actual machine code. But we must have
-a complete program that can generate a functional executable in order to use this method. That is what `swap_c` is for.
+a complete program that can generate a functional executable in order to use this method. That is what `swap_main.c` is for.
 
 Try the following two commands in the terminal:
 
-    gcc -Og -g swap.c swap_c -o swap
+    gcc -Og -g swap.c swap_main.c -o swap
     objdump -d swap > swap.d
 
 New compiler options:
