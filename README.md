@@ -20,7 +20,7 @@ a more complex Makefile used to generate assembly code automatically:
  
 ## VS Code Users
 
-There is an extension in the marketplace for viewing assembly files. Got to the marketplace by choosing it along the 
+There is an extension in the marketplace for viewing assembly files. Go to the marketplace by choosing it along the 
 left side (below the bug icon), and search for **assembly**. Then pick the popular one for x86 and x86_64.
 
 ## Your Tasks
